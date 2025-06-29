@@ -8,18 +8,18 @@ usuarios = db.usuarios
 def cadastrar_abertura():
     dados = request.get_json()   
     
-    if "id_colaborador" not in dados:
-        return jsonify({"erro": "Obrigatório id do colaborador."})
+    if "UID" not in dados:
+        return jsonify({"erro": "Obrigatório UID do crachá do colaborador."})
     hora_atual = datetime.now()
 
-    usuario = usuarios.find_one({"id_colaborador": dados["id_colaborador"]})
+    usuario = usuarios.find_one({"UID": dados["UID"]})
     print(usuario)
     if not usuario:
         return jsonify({"mensagem": "Acesso negado."}), 403
 
 
     queryFinal = {
-        "id_colaborador": dados["id_colaborador"],
+        "UID": dados["UID"],
         "hora_abertura": hora_atual
     }
 
@@ -37,12 +37,17 @@ def listar_aberturas():
     aberturas_formatadas = []
 
     for ab in aberturas:
-        usuario = usuarios.find_one({"id_colaborador": ab["id_colaborador"]}, {"_id": 0, "nome": 1})
+        usuario = usuarios.find_one({"UID": ab["UID"]}, {"_id": 0, "nome": 1, "id_colaborador": 1})
         nome = usuario["nome"] if usuario else "Desconhecido"
+        id_colaborador = usuario["id_colaborador"] if usuario else "sem ID"
         
+        print(ab)
+        print(usuario)
+
         aberturas_formatadas.append({
-            "id_colaborador": ab["id_colaborador"],
+            "UID": ab["UID"],
             "nome": nome,
+            "id_colaborador": id_colaborador,
             "hora_abertura": ab["hora_abertura"]
         })
 
