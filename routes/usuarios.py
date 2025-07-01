@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from connections.db import db
-from controllers.usuarios import listar_usuarios, cadastrar_usuario, editar_usuario, deletar_usuario
+from controllers.usuarios import listar_usuarios, cadastrar_usuario, editar_usuario, deletar_usuario, listar_usuario_uid
 
 usuarios = db.usuarios
 
@@ -15,10 +15,9 @@ def usuarios_handler():
     elif request.method == "POST":
         return cadastrar_usuario()
 
-@usuarios_bp.route("/<uid>", methods=["PUT", "DELETE"])
+@usuarios_bp.route("/<uid>", methods=["PUT", "DELETE", "GET"])
 def usuario_unico(uid):
     if request.method == "PUT":
         return editar_usuario(uid)
-
     elif request.method == "DELETE":
         return deletar_usuario(uid)

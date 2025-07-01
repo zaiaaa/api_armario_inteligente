@@ -18,6 +18,13 @@ def cadastrar_usuario():
     usuarios.insert_one(dados)
     return jsonify({"mensagem": "Usuário cadastrado"}), 201
 
+def listar_usuario_uid(uid):
+    usuario = usuarios.find_one({"UID": uid}, {"_id": 0})
+    if not usuario:
+        return jsonify({"erro": "Usuário não encontrado"}), 404
+    return jsonify(usuario), 200
+
+
 def editar_usuario(uid):
     dados = request.get_json()
     res = usuarios.update_one({"UID": uid}, {"$set": dados})
