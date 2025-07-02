@@ -4,7 +4,7 @@ from flask_cors import CORS
 from routes.usuarios import usuarios_bp
 from routes.abertura import abertura_bp
 from routes.master import master_bp
-
+import os
 #*Isso aqui é toda a parte de conexão no bd.
 
 app = Flask(__name__)
@@ -18,4 +18,5 @@ app.register_blueprint(master_bp)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get("PORT", 5000));
+    app.run(host='0.0.0.0', port=port)
