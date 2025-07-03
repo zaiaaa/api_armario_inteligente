@@ -16,6 +16,9 @@ app.register_blueprint(usuarios_bp)
 app.register_blueprint(abertura_bp)
 app.register_blueprint(master_bp)
 
+@app.route("/", methods=["GET"])
+def index():
+    return "API ONLINE"
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000));
