@@ -3,9 +3,11 @@ from flask import jsonify, request
 from datetime import datetime
 
 abertura = db.abertura
+status_abertura = db.status_abertura
 usuarios = db.usuarios
+lockout = db.lockout
 
-def cadastrar_abertura():
+def validar_cracha():
     dados = request.get_json()   
     
     if "UID" not in dados:
@@ -20,12 +22,39 @@ def cadastrar_abertura():
 
     queryFinal = {
         "UID": dados["UID"],
-        "hora_abertura": hora_atual
+        "status": False
     }
 
     try:
-        abertura.insert_one(queryFinal)
-        return jsonify({"mensagem": "Abertura registrada com sucesso."}), 201
+        status_abertura.insert_one(queryFinal)
+        return jsonify({"mensagem": "Aguardando preenchimento do Formulário."}), 201
+    except Exception as e:
+        return jsonify({"mensagem": f"Erro -> {str(e)}"}), 400
+
+
+def envia_formulario():
+    dados = request.get_json()    
+
+    try: 
+        db.status_abertura.update_one(
+        {"UID": dados["UID"]},
+        {"$set": {"status": True}}
+        )
+
+        db.lockout.update_one(
+        {"tag": dados["tag"]},
+        {"$set":  {
+            "status": dados["status"],
+            "local": dados["local"],
+            "UID": dados["UID"],
+            "hora_retirada": datetime.now()
+        }}
+        )
+
+        db.status_abertura.delete_one({"UID": dados["UID"]})
+
+
+        return {"status": "Formulario preenchido e trava Aberta!"}
     except Exception as e:
         return jsonify({"mensagem": f"Erro -> {str(e)}"}), 400
 
