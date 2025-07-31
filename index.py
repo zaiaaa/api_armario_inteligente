@@ -1,4 +1,3 @@
-
 from flask import Flask
 from flask_cors import CORS
 from routes.usuarios import usuarios_bp
