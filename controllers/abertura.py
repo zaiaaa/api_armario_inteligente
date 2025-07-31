@@ -32,10 +32,15 @@ def validar_cracha():
         return jsonify({"mensagem": f"Erro -> {str(e)}"}), 400
 
 
-def envia_formulario():
+def envia_formulario_retirada():
     dados = request.get_json()    
 
     try: 
+        lock = db.lockout.find_one({"tag": dados["tag"]})
+        if lock and lock.get("status") == "retirado":
+            return jsonify({"erro": "Este lockout já foi retirado!"}), 400
+
+
         db.status_abertura.update_one(
         {"UID": dados["UID"]},
         {"$set": {"status": True}}
@@ -44,19 +49,74 @@ def envia_formulario():
         db.lockout.update_one(
         {"tag": dados["tag"]},
         {"$set":  {
-            "status": dados["status"],
+            "status": "retirado",
             "local": dados["local"],
             "UID": dados["UID"],
             "hora_retirada": datetime.now()
         }}
         )
 
-        db.status_abertura.delete_one({"UID": dados["UID"]})
+        #db.status_abertura.delete_one({"UID": dados["UID"]})
 
 
-        return {"status": "Formulario preenchido e trava Aberta!"}
+        return {"status": "Formulario de retirada preenchido e trava Aberta!"}
     except Exception as e:
         return jsonify({"mensagem": f"Erro -> {str(e)}"}), 400
+
+def envia_formulario_devolucao():
+    dados = request.get_json()    
+
+    try: 
+        lock = db.lockout.find_one({"tag": dados["tag"]})
+        if lock and lock.get("status") == "devolvido":
+            return jsonify({"erro": "Este lockout já foi devolvido!"}), 400
+        
+        db.status_abertura.update_one(
+        {"UID": dados["UID"]},
+        {"$set": {"status": True}}
+        )
+
+        db.lockout.update_one(
+        {"tag": dados["tag"]},
+        {"$set":  {
+            "status": "devolvido",
+            "local": "",
+            "UID": dados["UID"],
+            "hora_retirada": datetime.now()
+        }}
+        )
+
+        #db.status_abertura.delete_one({"UID": dados["UID"]})
+
+
+        return {"status": "Formulario de devolução preenchido e trava Aberta!"}
+    except Exception as e:
+        return jsonify({"mensagem": f"Erro -> {str(e)}"}), 400
+
+def listar_lockouts():
+    lockouts = db.lockout.find({})
+
+    lockouts_formatados = []
+
+    for lock in lockouts:
+        usuario = usuarios.find_one(
+            {"UID": lock.get("UID")},
+            {"_id": 0, "nome": 1, "id_colaborador": 1}
+        )
+        nome = usuario["nome"] if usuario else "Desconhecido"
+        id_colaborador = usuario["id_colaborador"] if usuario else "sem ID"
+
+        lockouts_formatados.append({
+            "UID": lock.get("UID"),
+            "nome": nome,
+            "id_colaborador": id_colaborador,
+            "tag": lock.get("tag"),
+            "local": lock.get("local"),
+            "status": lock.get("status"),
+            "hora_retirada": lock.get("hora_retirada")
+        })
+
+    return jsonify(lockouts_formatados)
 
 def listar_aberturas():
     aberturas = abertura.find({})
