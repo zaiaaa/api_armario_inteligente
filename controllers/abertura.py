@@ -19,7 +19,7 @@ def validar_cracha():
     if not usuario:
         return jsonify({"mensagem": "Acesso negado."}), 403
 
-
+    #trocar essa query para o cadastro na intenção de abertura.
     queryFinal = {
         "UID": dados["UID"],
         "status": False
