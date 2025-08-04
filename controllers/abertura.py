@@ -5,6 +5,7 @@ from datetime import datetime
 abertura = db.abertura
 usuarios = db.usuarios
 
+# isso aqui vai virar um "VALIDAR TEAM MEMBER". vai verificar se o paizao ta pesente na lista de cadastro. Se estiver, retorna 200 e é cadastrada a INTENÇÃO de abertura do armário.
 def cadastrar_abertura():
     dados = request.get_json()   
     
