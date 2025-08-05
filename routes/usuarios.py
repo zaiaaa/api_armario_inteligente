@@ -21,3 +21,6 @@ def usuario_unico(uid):
         return editar_usuario(uid)
     elif request.method == "DELETE":
         return deletar_usuario(uid)
+    else:
+        print("entrou")
+        return listar_usuario_uid(uid)

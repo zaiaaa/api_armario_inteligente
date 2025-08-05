@@ -20,6 +20,7 @@ def cadastrar_usuario():
 
 def listar_usuario_uid(uid):
     usuario = usuarios.find_one({"UID": uid}, {"_id": 0})
+    print("entrou usuario unico")
     if not usuario:
         return jsonify({"erro": "Usuário não encontrado"}), 404
     return jsonify(usuario), 200
