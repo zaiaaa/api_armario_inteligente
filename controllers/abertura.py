@@ -81,8 +81,6 @@ def envia_formulario_devolucao():
         {"$set":  {
             "status": "devolvido",
             "local": "",
-            "UID": dados["UID"],
-            "hora_retirada": datetime.now()
         }}
         )
 
@@ -117,6 +115,16 @@ def listar_lockouts():
         })
 
     return jsonify(lockouts_formatados)
+
+def lista_status():
+    try:
+        usuario_atual = status_abertura.find_one({"status": False})
+
+        usuario_logado = usuarios.find_one({"UID": usuario_atual["UID"]}, {"_id": 0})
+        return jsonify(usuario_logado), 200
+    except Exception as e:
+        return jsonify({"mensagem": f"Erro -> {str(e)}"}), 400
+    
 
 def listar_aberturas():
     aberturas = abertura.find({})
