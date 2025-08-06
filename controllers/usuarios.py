@@ -1,5 +1,6 @@
 from connections.db import db
 from flask import jsonify, request
+from datetime import datetime
 
 usuarios = db.usuarios
 
@@ -14,6 +15,7 @@ def cadastrar_usuario():
 
     if usuarios.find_one({"UID": dados["UID"]}):
         return jsonify({"erro": "UID já cadastrado"}), 409
+    dados["hora_cadastro"] = datetime.now()
 
     usuarios.insert_one(dados)
     return jsonify({"mensagem": "Usuário cadastrado"}), 201
