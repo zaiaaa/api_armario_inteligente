@@ -12,7 +12,7 @@ def validar_cracha():
     
     if "UID" not in dados:
         return jsonify({"erro": "Obrigatório UID do crachá do colaborador."})
-    hora_atual = datetime.now()
+    # hora_atual = datetime.now()
 
     usuario = usuarios.find_one({"UID": dados["UID"]})
     print(usuario)
