@@ -22,8 +22,10 @@ def validar_cracha():
     #trocar essa query para o cadastro na intenção de abertura.
     queryFinal = {
         "UID": dados["UID"],
+        "acao": dados["acao"],
         "status": False
     }
+    #acao deve ser retirada ou devolucao
 
     try:
         status_abertura.insert_one(queryFinal)
