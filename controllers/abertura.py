@@ -121,6 +121,9 @@ def lista_status():
         usuario_atual = status_abertura.find_one({"status": False})
 
         usuario_logado = usuarios.find_one({"UID": usuario_atual["UID"]}, {"_id": 0})
+
+        usuario_logado["status"] = usuario_atual["status"]
+
         return jsonify(usuario_logado), 200
     except Exception as e:
         return jsonify({"mensagem": f"Erro -> {str(e)}"}), 400
