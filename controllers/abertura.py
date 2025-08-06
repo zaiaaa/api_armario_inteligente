@@ -118,7 +118,10 @@ def listar_lockouts():
 
 def lista_status():
     try:
-        usuario_atual = status_abertura.find_one({"status": False})
+        usuario_atual = status_abertura.find_one()
+
+        if not usuario_atual:
+            return jsonify({"mensagem": "Nenhum status encontrado."}), 404
 
         usuario_logado = usuarios.find_one({"UID": usuario_atual["UID"]}, {"_id": 0})
 
