@@ -33,6 +33,13 @@ def validar_cracha():
     except Exception as e:
         return jsonify({"mensagem": f"Erro -> {str(e)}"}), 400
 
+def excluir_status_abertura():
+    try:
+        resultado = status_abertura.delete_many({})  # Apaga todos os documentos
+        return jsonify({"mensagem": f"{resultado.deleted_count} status apagados com sucesso."}), 200
+    except Exception as e:
+        return jsonify({"mensagem": f"Erro ao apagar status -> {str(e)}"}), 400
+
 
 def envia_formulario_retirada():
     dados = request.get_json()    
