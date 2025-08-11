@@ -10,7 +10,7 @@ valida_abertura_bp = Blueprint("status_abertura", __name__, url_prefix="/status_
 def visualizar():
         return listar_lockouts()
 
-@valida_abertura_bp.route("/cadastrar", methods=["GET"])
+@valida_abertura_bp.route("/cadastrar", methods=["POST"])
 def visualizar():
         return cadastrar_lockout()
 
