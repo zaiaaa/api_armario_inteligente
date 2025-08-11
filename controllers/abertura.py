@@ -125,6 +125,24 @@ def listar_lockouts():
 
     return jsonify(lockouts_formatados)
 
+def cadastrar_lockout():
+    data = request.get_json()
+    tag = data.get("tag")
+    if not tag :
+        return jsonify({"erro": "tag é obrigatória"}), 400
+    # Monta o documento
+    novo_lockout = {
+        "tag": tag,
+        "local": "",
+        "status": "devolvido",  # ou qualquer valor padrão
+    }
+    db.lockout.insert_one(novo_lockout)
+    return jsonify({"mensagem": "Lockout cadastrado com sucesso"}), 201
+
+
+
+
+
 def lista_status():
     try:
         usuario_atual = status_abertura.find_one()

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from connections.db import db
-from controllers.abertura import excluir_status_abertura, lista_status, envia_formulario_retirada, listar_lockouts, envia_formulario_devolucao
+from controllers.abertura import cadastrar_lockout, excluir_status_abertura, lista_status, envia_formulario_retirada, listar_lockouts, envia_formulario_devolucao
 status_abertura = db.status_abertura
 
 valida_abertura_bp = Blueprint("status_abertura", __name__, url_prefix="/status_abertura")
@@ -9,6 +9,10 @@ valida_abertura_bp = Blueprint("status_abertura", __name__, url_prefix="/status_
 @valida_abertura_bp.route("/", methods=["GET"])
 def visualizar():
         return listar_lockouts()
+
+@valida_abertura_bp.route("/cadastrar", methods=["GET"])
+def visualizar():
+        return cadastrar_lockout()
 
 @valida_abertura_bp.route("/status", methods=["GET"])
 def status():
