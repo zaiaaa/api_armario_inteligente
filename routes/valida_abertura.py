@@ -11,7 +11,7 @@ def visualizar():
         return listar_lockouts()
 
 @valida_abertura_bp.route("/cadastrar", methods=["POST"])
-def visualizar():
+def cadastrar():
         return cadastrar_lockout()
 
 @valida_abertura_bp.route("/status", methods=["GET"])
