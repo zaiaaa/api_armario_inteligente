@@ -125,6 +125,37 @@ def listar_lockouts():
 
     return jsonify(lockouts_formatados)
 
+def listar_lockout(tag):
+    if not tag:
+        return jsonify({"erro": "Parâmetro 'tag' é obrigatório"}), 400
+
+    lock = db.lockout.find_one({"tag": tag})
+
+    if not lock:
+        return jsonify({"erro": "Lockout não encontrado"}), 404
+
+    usuario = usuarios.find_one(
+        {"UID": lock.get("UID")},
+        {"_id": 0, "nome": 1, "id_colaborador": 1}
+    )
+
+    nome = usuario["nome"] if usuario else "Desconhecido"
+    id_colaborador = usuario["id_colaborador"] if usuario else "sem ID"
+
+    lock_formatado = {
+        "UID": lock.get("UID"),
+        "nome": nome,
+        "id_colaborador": id_colaborador,
+        "tag": lock.get("tag"),
+        "local": lock.get("local"),
+        "status": lock.get("status"),
+        "hora_retirada": lock.get("hora_retirada")
+    }
+
+    return jsonify(lock_formatado)
+
+
+
 def cadastrar_lockout():
     data = request.get_json()
     tag = data.get("tag")
