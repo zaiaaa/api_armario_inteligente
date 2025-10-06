@@ -1,11 +1,23 @@
 from connections.db import db
 from flask import jsonify, request
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 usuarios = db.usuarios
 
 def listar_usuarios():
     lista = list(usuarios.find({}, {"_id": 0}))
+    
+    for usuario in lista:
+        hora_cadastro = usuario.get("hora_cadastro")
+        if hora_cadastro:
+            # garante que é datetime
+            if isinstance(hora_cadastro, str):
+                hora_cadastro = datetime.fromisoformat(hora_cadastro.replace("Z", "+00:00"))
+            # converte para horário de Brasília
+            hora_brasil = hora_cadastro.astimezone(ZoneInfo("America/Sao_Paulo"))
+            usuario["hora_cadastro"] = hora_brasil.strftime("%Y-%m-%d %H:%M:%S")
+    
     return jsonify(lista), 200
 
 def cadastrar_usuario():
