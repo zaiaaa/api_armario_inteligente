@@ -1,6 +1,7 @@
 from connections.db import db
 from flask import jsonify, request
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 abertura = db.abertura
 status_abertura = db.status_abertura
@@ -113,6 +114,18 @@ def listar_lockouts():
         nome = usuario["nome"] if usuario else "Desconhecido"
         id_colaborador = usuario["id_colaborador"] if usuario else "sem ID"
 
+        hora_utc = lock.get("hora_retirada")
+
+        if hora_utc:
+            # garante que é datetime
+            if isinstance(hora_utc, str):
+                hora_utc = datetime.fromisoformat(hora_utc.replace("Z", "+00:00"))
+            # converte pra horário de Brasília
+            hora_brasil = hora_utc.astimezone(ZoneInfo("America/Sao_Paulo"))
+            hora_retirada = hora_brasil.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            hora_retirada = None
+
         lockouts_formatados.append({
             "UID": lock.get("UID"),
             "nome": nome,
@@ -120,7 +133,7 @@ def listar_lockouts():
             "tag": lock.get("tag"),
             "local": lock.get("local"),
             "status": lock.get("status"),
-            "hora_retirada": lock.get("hora_retirada")
+            "hora_retirada": hora_retirada
         })
 
     return jsonify(lockouts_formatados)
