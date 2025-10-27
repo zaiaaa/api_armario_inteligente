@@ -80,12 +80,16 @@ def envia_formulario_devolucao():
         lock = db.lockout.find_one({"tag": dados["tag"]})
         if lock and lock.get("status") == "devolvido":
             return jsonify({"erro": "Este lockout já foi devolvido!"}), 400
+
         
         db.status_abertura.update_one(
         {"UID": dados["UID"]},
         {"$set": {"status": True}}
         )
 
+        if dados["chave"] == "s":
+            return {"status": "Formulario de devolução preenchido e trava Aberta!"}
+        
         db.lockout.update_one(
         {"tag": dados["tag"]},
         {"$set":  {
