@@ -10,6 +10,8 @@ import os
 app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "https://armario-inteligente.vercel.app"]}})
+
 
 
 app.register_blueprint(usuarios_bp)
