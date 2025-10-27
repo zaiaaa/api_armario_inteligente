@@ -89,19 +89,18 @@ def envia_formulario_devolucao():
 
         if dados["chave"] == "s":
             return {"status": "Formulario de devolução preenchido e trava Aberta!"}
+        else:
+            db.lockout.update_one(
+            {"tag": dados["tag"]},
+            {"$set":  {
+                "status": "devolvido",
+                "local": "",
+            }}
+            )
+            #db.status_abertura.delete_one({"UID": dados["UID"]})
+            return {"status": "Formulario de devolução preenchido e trava Aberta!"}
         
-        db.lockout.update_one(
-        {"tag": dados["tag"]},
-        {"$set":  {
-            "status": "devolvido",
-            "local": "",
-        }}
-        )
 
-        #db.status_abertura.delete_one({"UID": dados["UID"]})
-
-
-        return {"status": "Formulario de devolução preenchido e trava Aberta!"}
     except Exception as e:
         return jsonify({"mensagem": f"Erro -> {str(e)}"}), 400
 
