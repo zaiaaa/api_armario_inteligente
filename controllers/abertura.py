@@ -96,11 +96,11 @@ def envia_formulario_devolucao():
                 "UID": "",
                 "hora_retirada": None
             }})
+            return {"status": "Formulario de devolução preenchido e trava Aberta!"}
         else:
             return {"status": "Formulario de devolução preenchido e trava Aberta!"}
             #db.status_abertura.delete_one({"UID": dados["UID"]})
             #A ação da auto-exclusão foi para a parte de firmware.
-            return {"status": "Formulario de devolução preenchido e trava Aberta!"}
         
 
     except Exception as e:
