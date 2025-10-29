@@ -87,7 +87,7 @@ def envia_formulario_devolucao():
         {"$set": {"status": True}}
         )
 
-        if not dados["chave"]:
+        if not dados.get("chave") :
             db.lockout.update_one(
             {"tag": dados["tag"]},
             {"$set":  {
