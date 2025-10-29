@@ -95,9 +95,12 @@ def envia_formulario_devolucao():
             {"$set":  {
                 "status": "devolvido",
                 "local": "",
+                "UID": "",
+                "hora_retirada": None
             }}
             )
             #db.status_abertura.delete_one({"UID": dados["UID"]})
+            #A ação da auto-exclusão foi para a parte de firmware.
             return {"status": "Formulario de devolução preenchido e trava Aberta!"}
         
 
