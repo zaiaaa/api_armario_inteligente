@@ -87,9 +87,7 @@ def envia_formulario_devolucao():
         {"$set": {"status": True}}
         )
 
-        if dados["chave"] == "s":
-            return {"status": "Formulario de devolução preenchido e trava Aberta!"}
-        else:
+        if not dados["chave"]:
             db.lockout.update_one(
             {"tag": dados["tag"]},
             {"$set":  {
@@ -97,8 +95,9 @@ def envia_formulario_devolucao():
                 "local": "",
                 "UID": "",
                 "hora_retirada": None
-            }}
-            )
+            }})
+        else:
+            return {"status": "Formulario de devolução preenchido e trava Aberta!"}
             #db.status_abertura.delete_one({"UID": dados["UID"]})
             #A ação da auto-exclusão foi para a parte de firmware.
             return {"status": "Formulario de devolução preenchido e trava Aberta!"}
