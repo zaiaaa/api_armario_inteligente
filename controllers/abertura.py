@@ -107,25 +107,23 @@ def envia_formulario_devolucao():
         return jsonify({"mensagem": f"Erro -> {str(e)}"}), 400
 
 def listar_lockouts():
-    lockouts = db.lockout.find({})
+    lockouts = list(db.lockout.find({}))
+    usuarios_cursor = usuarios.find({}, {"_id": 0, "UID": 1, "nome": 1, "id_colaborador": 1})
+    
+    # cria um dicionário para lookup rápido por UID
+    usuarios_dict = {u["UID"]: u for u in usuarios_cursor}
 
     lockouts_formatados = []
 
     for lock in lockouts:
-        usuario = usuarios.find_one(
-            {"UID": lock.get("UID")},
-            {"_id": 0, "nome": 1, "id_colaborador": 1}
-        )
-        nome = usuario["nome"] if usuario else "Desconhecido"
-        id_colaborador = usuario["id_colaborador"] if usuario else "sem ID"
+        user = usuarios_dict.get(lock.get("UID"))
+        nome = user["nome"] if user else "Desconhecido"
+        id_colaborador = user["id_colaborador"] if user else "sem ID"
 
         hora_utc = lock.get("hora_retirada")
-
         if hora_utc:
-            # garante que é datetime
             if isinstance(hora_utc, str):
                 hora_utc = datetime.fromisoformat(hora_utc.replace("Z", "+00:00"))
-            # converte pra horário de Brasília
             hora_brasil = hora_utc.astimezone(ZoneInfo("America/Sao_Paulo"))
             hora_retirada = hora_brasil.strftime("%Y-%m-%d %H:%M:%S")
         else:
@@ -142,6 +140,7 @@ def listar_lockouts():
         })
 
     return jsonify(lockouts_formatados)
+
 
 def listar_lockout(tag):
     if not tag:
