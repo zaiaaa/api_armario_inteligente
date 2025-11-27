@@ -117,7 +117,7 @@ def listar_lockouts():
 
     for lock in lockouts:
         user = usuarios_dict.get(lock.get("UID"))
-        nome = user["nome"] if user else "Desconhecido"
+        nome = user.get("nome", "Desconhecido") if user else "Desconhecido"
         id_colaborador = user["id_colaborador"] if user else "sem ID"
 
         hora_utc = lock.get("hora_retirada")
