@@ -139,6 +139,8 @@ def listar_lockouts():
             "hora_retirada": hora_retirada
         })
 
+        lockouts_formatados.sort(key=lambda x: x["tag"])
+
     return jsonify(lockouts_formatados)
 
 
