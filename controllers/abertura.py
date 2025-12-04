@@ -139,7 +139,7 @@ def listar_lockouts():
             "hora_retirada": hora_retirada
         })
 
-    lockouts_formatados.sort(key=lambda x: int(x["tag"]))
+    lockouts_formatados.sort(key=lambda x: sort_tag(x["tag"]))
 
     return jsonify(lockouts_formatados)
 
@@ -233,4 +233,13 @@ def listar_aberturas():
         })
 
     return jsonify(aberturas_formatadas)
+
+
+def sort_tag(tag):
+    # números primeiro, ordenados numericamente
+    if tag.isdigit():
+        return (0, int(tag))
+    # depois códigos alfanuméricos, ordenados alfabeticamente
+    return (1, tag)
+
     
